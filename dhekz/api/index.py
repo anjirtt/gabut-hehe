@@ -7,7 +7,17 @@ import concurrent.futures
 import threading
 
 app = Flask(__name__, static_folder='../public')
+def test_endpoint(provider):
+    """Test apakah endpoint masih hidup"""
+    try:
+        res = requests.get(provider['url'], timeout=3)
+        return res.status_code != 404
+    except:
+        return False
 
+# Pas start spam, filter dulu provider yang hidup
+active_providers = [p for p in OTP_PROVIDERS if test_endpoint(p)]
+print(f"🔥 {len(active_providers)} provider masih hidup dari {len(OTP_PROVIDERS)}")
 # ================== 50+ PROVIDER OTP ================== #
 OTP_PROVIDERS = [
     # E-WALLET & PAYMENT
